@@ -9,12 +9,13 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation } from "expo-router";
-import AddIcon from "../../assets/images/plus.png";
-import DeleteIcon from "../../assets/images/delete.png";
-import EditIcon from "../../assets/images/edit.png";
-import ClearIcon from "../../assets/images/close.png";
-export default function ListScreen() {
-  const navigation:any = useNavigation();
+import AddIcon from "../assets/images/plus.png";
+import DeleteIcon from "../assets/images/delete.png";
+import EditIcon from "../assets/images/edit.png";
+import ClearIcon from "../assets/images/close.png";
+
+export default function Lists() {
+  const navigation: any = useNavigation();
   const [focused, setFocused] = useState(false);
   const [items, setItems] = useState([{ title: "", rupees: "" }]);
 
@@ -30,6 +31,7 @@ export default function ListScreen() {
     const fetchItems = async () => {
       try {
         const storedItems = await AsyncStorage.getItem("items");
+
         if (storedItems) {
           setItems(JSON.parse(storedItems));
         }
@@ -48,13 +50,13 @@ export default function ListScreen() {
     }
   };
   const deleteItem = ({ index }: any) => {
-    const filts:any = items?.filter((_, ind) => ind !== index);
+    const filts: any = items?.filter((_, ind) => ind !== index);
     AsyncStorage.setItem("items", filts);
     setItems(filts);
   };
   const handleEdit = ({ index }: any) => {
     const fnd = items?.find((_, ind) => ind === index);
-    navigation?.navigate("InputScreen", { ...fnd, ind: index?.toString() });
+    navigation?.navigate("Create", { ...fnd, ind: index?.toString() });
   };
   return (
     <View style={styles.container}>
@@ -75,14 +77,14 @@ export default function ListScreen() {
               height: 20,
               width: 20,
             }}
-            onPress={() => navigation?.navigate("InputScreen")}
+            onPress={() => navigation?.navigate("Create")}
           >
             <Image
               style={{ objectFit: "cover", height: 20, width: 20 }}
               source={AddIcon}
             />
           </TouchableOpacity>
-          {items?.length && items?.[0]?.title ? (
+          {items?.length && items?.[0]?.title != "" ? (
             <TouchableOpacity
               style={{
                 backgroundColor: "#f1f1f1",
@@ -101,7 +103,7 @@ export default function ListScreen() {
           ) : null}
         </View>
       </View>
-      {items?.length === 0 || items?.[0]?.title ? (
+      {items?.length === 0 || items?.[0]?.title == "" ? (
         <Text style={styles.noItemsText}>No items found</Text>
       ) : (
         <FlatList

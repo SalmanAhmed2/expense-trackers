@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  Image,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "expo-router";
 import { useRoute } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import ListIcon from "../assets/images/clipboard.png";
 
 type TabParamList = {
   List: undefined;
@@ -12,7 +22,7 @@ type TabParamList = {
 
 type InputScreenProps = BottomTabScreenProps<TabParamList, "InputScreen">;
 
-export default function InputScreen() {
+export default function Create() {
   const navigation: any = useNavigation();
   const route: any = useRoute();
 
@@ -40,7 +50,7 @@ export default function InputScreen() {
         items.push(newItem);
         await AsyncStorage.setItem("items", JSON.stringify(items));
       }
-      navigation?.navigate("ListScreen"); // Correct tab name
+      navigation?.navigate("index"); // Correct tab name
       Alert.alert("Success", "Item added successfully!");
       setTitle("");
       setRupees("");
@@ -68,10 +78,46 @@ export default function InputScreen() {
         value={rupees}
         onChangeText={setRupees}
       />
-      <Button
-        title={route?.params?.ind ? "Update Item" : "Add Item"}
-        onPress={addItem}
-      />
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: 10,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            paddingVertical: 5,
+            borderRadius: 10,
+            paddingHorizontal: 20,
+            backgroundColor: "blue",
+            display: "flex",
+            flexDirection: "row",
+            gap: 5,
+          }}
+          onPress={addItem}
+        >
+          <Text style={{ color: "#fff" }}>
+            {route?.params?.ind ? "Update Item" : "Add Item"}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 5,
+            borderRadius: 10,
+            paddingHorizontal: 20,
+            backgroundColor: "#f1f1f1",
+            display: "flex",
+            flexDirection: "row",
+            gap: 5,
+          }}
+          onPress={() => navigation?.navigate("index")}
+        >
+          <Text>Go to List</Text>
+          <Image style={{ height: 20, width: 20 }} source={ListIcon} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
