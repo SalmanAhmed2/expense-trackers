@@ -10,17 +10,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import { useNavigation } from "expo-router";
 import { useRoute } from "@react-navigation/native";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import ListIcon from "../assets/images/clipboard.png";
-
-type TabParamList = {
-  List: undefined;
-  InputScreen: undefined;
-};
-
-type InputScreenProps = BottomTabScreenProps<TabParamList, "InputScreen">;
+import BackIcon from "../assets/images/back.png";
 
 export default function Create() {
   const navigation: any = useNavigation();
@@ -34,13 +29,11 @@ export default function Create() {
       Alert.alert("Error", "Both fields are required!");
       return;
     }
-
-    const newItem = { title, rupees };
+    const date = new Date();
+    const newItem = { title, rupees, date };
     try {
       const existingItems: any = await AsyncStorage.getItem("items");
       if (route?.params) {
-        console.log();
-
         const filts = JSON?.parse(existingItems)?.map((it: any, ind: any) =>
           ind?.toString() === route?.params?.ind ? newItem : it
         );
@@ -65,59 +58,120 @@ export default function Create() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Rupees"
-        keyboardType="numeric"
-        value={rupees}
-        onChangeText={setRupees}
-      />
+      {/* <-----> Header <-----> */}
       <View
         style={{
+          height: "5%",
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
+          alignItems: "center",
+          justifyContent: "space-between",
           gap: 10,
+          marginVertical: 20,
         }}
       >
         <TouchableOpacity
-          style={{
-            paddingVertical: 5,
-            borderRadius: 10,
-            paddingHorizontal: 20,
-            backgroundColor: "blue",
-            display: "flex",
-            flexDirection: "row",
-            gap: 5,
-          }}
-          onPress={addItem}
-        >
-          <Text style={{ color: "#fff" }}>
-            {route?.params?.ind ? "Update Item" : "Add Item"}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            paddingVertical: 5,
-            borderRadius: 10,
-            paddingHorizontal: 20,
-            backgroundColor: "#f1f1f1",
-            display: "flex",
-            flexDirection: "row",
-            gap: 5,
-          }}
+          style={{ backgroundColor: "#f1f1f1", borderRadius: 5, padding: 3 }}
           onPress={() => navigation?.navigate("index")}
         >
-          <Text>Go to List</Text>
-          <Image style={{ height: 20, width: 20 }} source={ListIcon} />
+          <Image source={BackIcon} style={{ height: 20, width: 20 }} />
         </TouchableOpacity>
+        <Text
+          style={{
+            fontSize: 18,
+            fontFamily: "Nunito",
+            width: "60%",
+            fontWeight: "bold",
+            // textAlign: "start",
+          }}
+        >
+          Add Expense
+        </Text>
       </View>
+      {/* <-----> Header <-----> */}
+      <View style={{ display: "flex" }}>
+        <View>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 12,
+              fontFamily: "Nunito",
+              marginVertical: 5,
+            }}
+          >
+            Expense
+          </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Title"
+            value={title}
+            onChangeText={setTitle}
+          />
+        </View>
+        <View>
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 12,
+              fontFamily: "Nunito",
+              marginVertical: 5,
+            }}
+          >
+            Amount
+          </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Rupees"
+            keyboardType="numeric"
+            value={rupees}
+            onChangeText={(e) => setRupees(e)}
+          />
+        </View>
+        {/* 
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 10,
+          }}
+        >
+  
+          <TouchableOpacity
+            style={{
+              paddingVertical: 5,
+              borderRadius: 10,
+              paddingHorizontal: 20,
+              backgroundColor: "#f1f1f1",
+              display: "flex",
+              flexDirection: "row",
+              gap: 5,
+            }}
+            onPress={() => navigation?.navigate("index")}
+          >
+            <Text>Go to List</Text>
+            <Image style={{ height: 20, width: 20 }} source={ListIcon} />
+          </TouchableOpacity> 
+        </View>
+          */}
+      </View>
+      <TouchableOpacity
+        style={{
+          paddingVertical: 5,
+          borderRadius: 5,
+          paddingHorizontal: 20,
+          backgroundColor: "#800080",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "row",
+          gap: 5,
+        }}
+        onPress={addItem}
+      >
+        <Text style={{ color: "#fff" }}>
+          {route?.params?.ind ? "Update Item" : "Add Item"}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -126,14 +180,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    justifyContent: "center",
+    justifyContent: "space-between",
     backgroundColor: "#fff",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
-    padding: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
     marginBottom: 16,
-    borderRadius: 4,
+    borderRadius: 7,
+    fontSize: 10,
+    fontFamily: "Nunito",
+    color: "#999",
   },
 });
